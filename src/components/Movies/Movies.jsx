@@ -1,21 +1,44 @@
-import React from 'react'
-
-import { Card, Button } from 'react-bootstrap'
+import React, { useEffect, useState } from 'react'
+import { Link } from 'react-router-dom'
+import { Col } from 'react-bootstrap'
+import axios from 'axios'
+import Movie from '../Movie/Movie'
 
 const Movies = () => {
+
+  const [moviesState, setMoviesState] = useState([])
+  /***
+   * moviesState === []
+   * 
+   * useEffect => setMoviesState(data)
+   * 
+   * moviesState === [{},{},{},{}]
+   */
+
+
+  const getMovies = async () => {
+    const url = 'https://ghibliapi.herokuapp.com/films'
+    const response = await axios.get(url)
+    // axios.get(url)
+    //   .then((res) => console.log(res))
+    console.log(response)
+    setMoviesState(response.data)
+  }
+
+  useEffect(() => {
+    getMovies()
+  }, [])
+
+
   return (
     <div>
-      <Card style={{ width: '18rem' }}>
-        <Card.Img variant="top" src="" />
-        <Card.Body>
-          <Card.Title>Card Title</Card.Title>
-          <Card.Text>
-            Some quick example text to build on the card title and make up the bulk of
-            the card's content.
-          </Card.Text>
-          <Button variant="primary">Go somewhere</Button>
-        </Card.Body>
-      </Card>
+      <Col lg={3} md={4} sm={6} xs={12} className="mt-3" >
+        {
+          moviesState.map((info, index) => {
+            return <Movie data={info} key={index} />
+          })
+        }
+      </Col>
     </div>
   )
 }
